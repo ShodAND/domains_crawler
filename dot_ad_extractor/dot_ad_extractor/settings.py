@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'dot_ad_extractor.spiders'
 #USER_AGENT = 'dot_ad_extractor (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
