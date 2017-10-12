@@ -45,7 +45,7 @@ class OmpaAdSpider(scrapy.Spider):
 
                 # Start parsing the fields of the table depending on the td text
                 if title == "Nom de domini: ":
-                    a_domain['title'] = a_field.xpath("./a/text()").extract_first()
+                    a_domain['domain'] = a_field.xpath("./a/text()").extract_first()
                 elif title == "Titular: ":
                     a_domain['owner'] = a_field.xpath("./text()").extract_first()
                 elif title and title.startswith("En base"):
@@ -60,5 +60,7 @@ class OmpaAdSpider(scrapy.Spider):
                 if close_a_domain_block and a_domain != {}:
                     the_domains.append(a_domain)
                     close_a_domain_block = False
+
+
 
         print (the_domains)
