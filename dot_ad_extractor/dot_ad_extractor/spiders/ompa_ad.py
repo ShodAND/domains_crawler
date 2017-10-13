@@ -35,7 +35,7 @@ class OmpaAdSpider(scrapy.Spider):
                 # Try to extract the title of each field of the table (tr/td)
                 title = a_field.xpath("./strong/text()").extract_first()
 
-                logging.debug (a_field)
+                #logging.debug (a_field)
 
                 # Start parsing the fields of the table depending on the td text
                 if title == "Nom de domini: ":
@@ -66,12 +66,6 @@ class OmpaAdSpider(scrapy.Spider):
                     close_a_domain_block = False
 
         print (the_domains)
-
-        print ()
-        print ()
-        print ()
-        print ()
-
         print ()
         print ()
         print ()
