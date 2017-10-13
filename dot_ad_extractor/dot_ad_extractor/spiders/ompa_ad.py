@@ -13,7 +13,7 @@ import logging
 class OmpaAdSpider(scrapy.Spider):
     name = 'ompa.ad'
     allowed_domains = ['ompa.ad']
-    start_urls = ['http://ompa.ad/bases_dades/dominis2.php']
+    start_urls = ['http://www.ompa.ad/bases_dades/dominis2.php?_pagi_pg=1']
 
     Rules= (Rule(LinkExtractor(allow=(), restrict_xpaths=('/html/body/table[2]/tbody/tr/td/span/p[2]/a',)), callback="parse", follow= True),)
 
@@ -31,17 +31,11 @@ class OmpaAdSpider(scrapy.Spider):
 
             # Initialize a_domain
             a_domain = {}
-
-            print ()
-            print ()
-            print ()
-            print ()
-
             for a_field in a_table.xpath(table_field_full):
                 # Try to extract the title of each field of the table (tr/td)
                 title = a_field.xpath("./strong/text()").extract_first()
 
-                logging.debug (a_field)
+                #logging.debug (a_field)
 
                 # Start parsing the fields of the table depending on the td text
                 if title == "Nom de domini: ":
@@ -49,12 +43,22 @@ class OmpaAdSpider(scrapy.Spider):
                 elif title == "Titular: ":
                     a_domain['owner'] = a_field.xpath("./text()").extract_first()
                 elif title and title.startswith("En base"):
-                    a_domain['brand'] = a_field.xpath("./a/text()").extract_first().split(" ")[0]
-                    a_domain['brand_url'] = a_field.xpath("./a/@href").extract_first()
+                    try:
+                        try:
+                            a_domain['brand'] = a_field.xpath("./a/text()").extract_first().split(" ")[0]
+                            a_domain['brand_url'] = a_field.xpath("./a/@href").extract_first()
+                        except:
+                            a_domain['brand'] = a_field.xpath("./text()").extract_first()
+                    except:
+                        a_domain['brand'] = "unknown"
+
                 elif title and title.startswith("Data d'autoritzac"):
-                    a_domain['creation_date'] = a_field.xpath("./text()").extract_first().replace(" ", "")
-                    a_domain['creation_utc'] = delorean.parse(a_domain['creation_date']).epoch
-                    close_a_domain_block = True
+                    try:
+                        a_domain['creation_date'] = a_field.xpath("./text()").extract_first().replace(" ", "")
+                        a_domain['creation_utc'] = delorean.parse(a_domain['creation_date']).epoch
+                        close_a_domain_block = True
+                    except:
+                        a_domain['creation_date'] = 'unknown'
 
                 # If a domain block parse is ended and resultant domain is not empty
                 if close_a_domain_block and a_domain != {}:
@@ -62,12 +66,6 @@ class OmpaAdSpider(scrapy.Spider):
                     close_a_domain_block = False
 
         print (the_domains)
-
-        print ()
-        print ()
-        print ()
-        print ()
-
         print ()
         print ()
         print ()
@@ -81,4 +79,4 @@ class OmpaAdSpider(scrapy.Spider):
             if a_next_page_title.startswith("Seg"):
                 next_page_url = "http://www.ompa.ad" + a_next_page.xpath("./@href").extract_first()
                 print ("Next page URL '{}'".format(next_page_url))
-                request = scrapy.Request(url=next_page_url)
+                yield scrapy.Request(url=next_page_url)
