@@ -61,6 +61,24 @@ class OmpaAdSpider(scrapy.Spider):
                     the_domains.append(a_domain)
                     close_a_domain_block = False
 
-
-
         print (the_domains)
+
+        print ()
+        print ()
+        print ()
+        print ()
+
+        print ()
+        print ()
+        print ()
+        print ()
+        # Continue scrapping the next page
+        ending_section = response.xpath("//table[2]")
+        next_page_urls = ending_section.xpath('./tr/td/span/p[2]/a')
+        for a_next_page in next_page_urls:
+            a_next_page_title = a_next_page.xpath("./text()").extract_first()
+            # Identify next url
+            if a_next_page_title.startswith("Seg"):
+                next_page_url = "http://www.ompa.ad" + a_next_page.xpath("./@href").extract_first()
+                print ("Next page URL '{}'".format(next_page_url))
+                request = scrapy.Request(url=next_page_url)
