@@ -3,7 +3,7 @@ import scrapy
 
 from scrapy.spiders import CrawlSpider
 
-from scrapy.contrib.spiders import Rule
+from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 
 import delorean
